@@ -1,7 +1,8 @@
-import flask
+import flask, flask-socketio
 import firebaseManager as fbm
 
-app = flask.Flask(__name__)
+server = flask.Flask(__name__)
+socketIO = flask_socketio.socketIO(server)
 
-if __name_ == "__main__":
-  app.run()
+if __name__ == "__main__":
+  socketIO.run(server, host="0.0.0.0")
