@@ -1,5 +1,6 @@
 firebase
 firebase-admin
-https://github.com/benoitc/gunicorn/archive/refs/heads/master.zip#egg=gunicorn==20.1.0
 flask
 flask-socketio
+https://github.com/benoitc/gunicorn/archive/refs/heads/master.zip#egg=gunicorn==20.1.0
+gevent-websocket
