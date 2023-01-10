@@ -1,4 +1,5 @@
 import flask
+import firebaseManager as fbm
 
 app = flask.Flask(__name__)
 
