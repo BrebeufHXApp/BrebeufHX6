@@ -1,4 +1,4 @@
-import flask, flask-socketio
+import flask, flask_socketio
 import firebaseManager as fbm
 
 server = flask.Flask(__name__)
