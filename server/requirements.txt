@@ -1,6 +1,6 @@
 firebase
 firebase-admin
 flask
-flask-socketio
+Flask-SocketIO
 https://github.com/benoitc/gunicorn/archive/refs/heads/master.zip#egg=gunicorn==20.1.0
 gevent-websocket
