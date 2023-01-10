@@ -1,2 +1,4 @@
 firebase
 firebase-admin
+flask
+flask-socketio
