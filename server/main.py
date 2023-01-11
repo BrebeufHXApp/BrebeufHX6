@@ -1,6 +1,7 @@
 import flask, flask_socketio
 import firebaseManager as fbm
 
+#https://brebeufhxapp.onrender.com
 server = flask.Flask(__name__)
 socketIO = flask_socketio.SocketIO(server)
 

@@ -10,7 +10,7 @@ server.login("brebeufhxapp@gmail.com", "dlsrgpgqosqxtmzw")
 with open("sources/email.html", "rb") as file:
     html = file.read()
     file.close()
-with open("sources/background.jpg", "rb") as file:
+with open("sources/earth.jpg", "rb") as file:
     bgImg = file.read()
     file.close()
 
