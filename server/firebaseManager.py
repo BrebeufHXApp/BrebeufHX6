@@ -9,7 +9,7 @@ authenticator = auth.Client(app)
 API_KEY = "AIzaSyAmnQRnBglx9y5n5cRMjvywODd1g519vkc"
 NOT_ALLOWED_CHAR_IN_USERNAME = {"@", "'", '"'}
 
-def createUser(username, password, firstName, lastName, email):
+def createAccount(username, password, firstName, lastName, email):
     #password must be at least 6 characters long
     #username cannot contain certain characters
 
