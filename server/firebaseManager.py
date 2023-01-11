@@ -1,4 +1,4 @@
-import json, threading
+import json, threading, traceback
 import requests
 import firebase_admin
 from firebase_admin import firestore, auth
@@ -51,7 +51,7 @@ def signIn(id, password):
     UNVERIFIED_EMAIL
     """
     try:user = getUser(id)
-    except Exception as e: return str(e)
+    except Exception as e: return str(traceback.format_exc()) #"INVALID_INFO"
 
     #verified if account is blocked
     if not user["verified"]:return "UNVERIFIED_EMAIL"
