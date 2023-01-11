@@ -51,7 +51,7 @@ def signIn(id, password):
     UNVERIFIED_EMAIL
     """
     try:user = getUser(id)
-    except Exception as e: return e
+    except Exception as e: return str(e)
 
     #verified if account is blocked
     if not user["verified"]:return "UNVERIFIED_EMAIL"
