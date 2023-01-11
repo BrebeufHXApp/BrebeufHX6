@@ -3,7 +3,7 @@ import requests
 import firebase_admin
 from firebase_admin import firestore, auth
 
-cred = firebase_admin.credentials.Certificate("credentials.json")
+cred = firebase_admin.credentials.Certificate("sources/credentials.json")
 app = firebase_admin.initialize_app(cred)
 authenticator = auth.Client(app)
 API_KEY = "AIzaSyAmnQRnBglx9y5n5cRMjvywODd1g519vkc"
@@ -15,7 +15,7 @@ def createAccount(username, password, firstName, lastName, email):
 
     def _verify_account():
         #delete user account if unverified
-        try:user = getUser(username=username)
+        try:user = getUser(username)
         except:return
         if not user["verified"]:delete_user(username)
 

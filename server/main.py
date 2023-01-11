@@ -4,6 +4,10 @@ import firebaseManager as fbm
 server = flask.Flask(__name__)
 socketIO = flask_socketio.SocketIO(server)
 
+def send(route, data, sid):
+  socketIO.emit(route, data=data, room=sid)
+
+#---------------------Server---------------------
 @server.route("/")
 def main():
   return """<center><h1>BrebeufHXApp</h1></center>"""

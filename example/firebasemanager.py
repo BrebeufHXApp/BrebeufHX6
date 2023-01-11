@@ -3,25 +3,22 @@ from firebase_admin import firestore
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.mime.image import MIMEImage
-from judge import judge,runjudge
 
-#cred=firebase_admin.credentials.Certificate("/home/brebeufhx5website/brebeufhx5website/data/credentials.json")
-cred=firebase_admin.credentials.Certificate("data/credentials.json")
+cred=firebase_admin.credentials.Certificate("/home/brebeufhx5website/brebeufhx5website/data/credentials.json")
 app=firebase_admin.initialize_app(cred)
 firestoredb=firestore.client()
 petitionbase=firestoredb.collection("petitions")
 pendingbase=firestoredb.collection("pending")
 emailserver=smtplib.SMTP_SSL("smtp.gmail.com",465,context=ssl.create_default_context())
-emailserver.login("brebeufhx5website@gmail.com","6079smith")
-#file=open("/home/brebeufhx5website/brebeufhx5website/data/email.html","rb")
-file=open("data/email.html","rb")
+emailserver.login("brebeufhx5website@gmail.com","bhckybdgmoofbubo")
+file=open("/home/brebeufhx5website/brebeufhx5website/data/email.html","rb")
 html=file.read()
 file.close()
 
 def uploadPetition(title,text,author,email):
     uid=str(uuid.uuid1())
     data=dict(title=title,text=text,author=author,votes=0,emails=[],email=email)
-    result=runjudge(judge,title,text)
+    result="unclear"
     if result=="accepted":petitionbase.document(uid).set(data)
     else:pendingbase.document(uid).set(data)
     return result
@@ -35,8 +32,7 @@ def votePetition(uid,email):
     mail["To"]=email
     mail["Subject"]="Nouvelle pétition"
     mail.attach(MIMEText(html,"html","utf-8"))
-    #file=open("/home/brebeufhx5website/brebeufhx5website/data/petition.jpg","rb")
-    file=open("data/petition.jpg","rb")
+    file=open("/home/brebeufhx5website/brebeufhx5website/data/petition.jpg","rb")
     attachment0=MIMEImage(file.read())
     attachment0.add_header("Content-ID","<petition>")
     file.close()
@@ -44,7 +40,8 @@ def votePetition(uid,email):
     try:
         emails=petition.get().get("emails")
         if email in emails:return "already voted"
-        emailserver.sendmail("brebeufhx5website@gmail.com",email,mail.as_string())
+        try:emailserver.sendmail("brebeufhx5website@gmail.com",email,mail.as_string())
+        except:pass
         emails.append(email)
         petition.update({"emails":emails})
         votes=petition.get().get("votes")+1
