@@ -25,5 +25,9 @@ def signIn():
   password = data.get("password")
   return fbm.signIn(id, password)
 
+@server.route("/resetPassword")
+def resetPassword():
+  return fbm.resetPassword(flask.request.form.get("id"))
+
 if __name__ == "__main__":
   socketIO.run(server, host="0.0.0.0")
