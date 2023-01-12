@@ -1,11 +1,12 @@
 #apply monkey path to prevent ssl library from raising recursion error
 import gevent.monkey
-gevent.monkey.patch_all(ssl=False)
+gevent.monkey.patch_all()
 
 import flask, flask_socketio
 import firebaseManager as fbm
 
 #https://brebeufhxapp.onrender.com
+#testing server: requests.post(f"{url}/signIn", data={"id":"user", "password":"123456"}).text
 server = flask.Flask(__name__)
 socketIO = flask_socketio.SocketIO(server)
 
