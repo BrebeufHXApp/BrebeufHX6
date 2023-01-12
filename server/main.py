@@ -1,7 +1,3 @@
-#apply monkey path to prevent ssl library from raising recursion error
-#import gevent.monkey
-#gevent.monkey.patch_all()
-
 import flask, flask_socketio
 import firebaseManager as fbm
 
@@ -17,10 +13,6 @@ def send(route, data, sid):
 @server.route("/")
 def main():
   return """<center><h1>BrebeufHXApp</h1></center>"""
-
-@server.route("/debugging")
-def debugging():
-  return "true"
 
 @server.route("/createAccount", methods=["POST"])
 def createAccount():
