@@ -1,4 +1,4 @@
-import json, threading, traceback
+import json, threading
 import requests
 import firebase_admin
 from firebase_admin import firestore, auth
@@ -6,6 +6,7 @@ from firebase_admin import firestore, auth
 cred = firebase_admin.credentials.Certificate("sources/credentials.json")
 app = firebase_admin.initialize_app(cred)
 authenticator = auth.Client(app)
+dtbase = firestore.client()
 API_KEY = "AIzaSyAmnQRnBglx9y5n5cRMjvywODd1g519vkc"
 NOT_ALLOWED_CHAR_IN_USERNAME = {"@", "'", '"'}
 
@@ -31,6 +32,10 @@ def createAccount(username, password, firstName, lastName, email):
     token = auth.create_custom_token(username)
     token = requests.post(f"https://identitytoolkit.googleapis.com/v1/accounts:signInWithCustomToken?key={API_KEY}",data={"token":token}).json()["idToken"]
 
+    #create firestore document
+    data = {"About":""}
+    dtbase.collection("Users").document(username).set(data)
+
     #send verification email
     requests.post(f"https://identitytoolkit.googleapis.com/v1/accounts:sendOobCode?key={API_KEY}",data={"requestType":"VERIFY_EMAIL","idToken":token})
     threading.Timer(300,_verify_account).start() #delete the account if not verified after 5 minutes
@@ -42,7 +47,8 @@ def getUser(id) -> dict:
         user = authenticator.get_user(id)
     else: #ID provided by email
         user = authenticator.get_user_by_email(id)
-    return {"username":user.uid, "email":user.email, "verified":user.email_verified, "disabled":user.disabled}
+    data = dtbase.collection("Users").document(user.uid).get().to_dict()
+    return {"username":user.uid, "email":user.email, "verified":user.email_verified, "disabled":user.disabled, **data}
 
 def signIn(id, password):
     """
@@ -52,7 +58,7 @@ def signIn(id, password):
     UNVERIFIED_EMAIL
     """
     try:user = getUser(id)
-    except Exception as e: return str(traceback.format_exc()) #"INVALID_INFO"
+    except: return "INVALID_INFO"
 
     #verified if account is blocked
     if not user["verified"]:return "UNVERIFIED_EMAIL"
@@ -75,6 +81,7 @@ def resetPassword(id):
 def delete_user(username):
     try:
         authenticator.delete_user(username)
+        dtbase.collection("Users").document(username).delete()
         return "true"
     except auth.UserNotFoundError:return "INVALID_INFO"
 

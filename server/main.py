@@ -1,3 +1,4 @@
+#apply monkey path to prevent ssl library from raising recursion error
 import gevent.monkey
 gevent.monkey.patch_all()
 
