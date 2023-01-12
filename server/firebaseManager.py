@@ -1,6 +1,3 @@
-import gevent.monkey
-gevent.monkey.patch_all()
-
 import json, threading, traceback
 import requests
 import firebase_admin
