@@ -18,6 +18,10 @@ def send(route, data, sid):
 def main():
   return """<center><h1>BrebeufHXApp</h1></center>"""
 
+@server.route("/debugging")
+def debugging():
+  return "true"
+
 @server.route("/createAccount", methods=["POST"])
 def createAccount():
   data = flask.request.form
