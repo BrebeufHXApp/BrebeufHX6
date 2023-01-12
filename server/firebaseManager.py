@@ -9,7 +9,7 @@ authenticator = auth.Client(app)
 dtbase = firestore.client()
 API_KEY = "AIzaSyAmnQRnBglx9y5n5cRMjvywODd1g519vkc"
 NOT_ALLOWED_CHAR_IN_USERNAME = {"@", "'", '"'}
-with open("sources/AboutTemplates.json", "r") as file:
+with open("sources/AboutTemplates.json", "r", encoding="utf-8") as file:
     aboutTemplates = json.load(file)
 
 def createAccount(username, password, firstName, lastName, email):
