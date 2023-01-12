@@ -1,4 +1,4 @@
-import json, threading
+import json, threading, random
 import requests
 import firebase_admin
 from firebase_admin import firestore, auth
@@ -9,6 +9,8 @@ authenticator = auth.Client(app)
 dtbase = firestore.client()
 API_KEY = "AIzaSyAmnQRnBglx9y5n5cRMjvywODd1g519vkc"
 NOT_ALLOWED_CHAR_IN_USERNAME = {"@", "'", '"'}
+with open("sources/AboutTemplates.json", "r") as file:
+    aboutTemplates = json.load(file)
 
 def createAccount(username, password, firstName, lastName, email):
     #password must be at least 6 characters long
@@ -33,7 +35,7 @@ def createAccount(username, password, firstName, lastName, email):
     token = requests.post(f"https://identitytoolkit.googleapis.com/v1/accounts:signInWithCustomToken?key={API_KEY}",data={"token":token}).json()["idToken"]
 
     #create firestore document
-    data = {"About":""}
+    data = {"about":random.choice(aboutTemplates), "stats":[random.randint(0, 1000) for _ in range(3)]}
     dtbase.collection("Users").document(username).set(data)
 
     #send verification email
@@ -48,7 +50,7 @@ def getUser(id) -> dict:
     else: #ID provided by email
         user = authenticator.get_user_by_email(id)
     data = dtbase.collection("Users").document(user.uid).get().to_dict()
-    return {"username":user.uid, "email":user.email, "verified":user.email_verified, "disabled":user.disabled, **data}
+    return {"username":user.uid, "email":user.email, "fullName":user.display_name, "verified":user.email_verified, "disabled":user.disabled, **data}
 
 def signIn(id, password):
     """
