@@ -25,6 +25,7 @@ def createAccount(username, password, firstName, lastName, email):
     try:authenticator.create_user(uid=username, display_name=f"{firstName} {lastName}", email=email, password=password, email_verified=False)
     except auth.EmailAlreadyExistsError:return "EMAIL_ALREADY_EXISTS"
     except auth.UidAlreadyExistsError:return "USERNAME_ALREADY_EXISTS"
+    except:return "INVALID_INFO"
 
     #generate secure token to communicate with firebase server
     token = auth.create_custom_token(username)
