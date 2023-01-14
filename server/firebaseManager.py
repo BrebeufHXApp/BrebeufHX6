@@ -97,13 +97,13 @@ def newUuid():
         return newUuid()
     return str(id)
 
-def createEvent(title, organiser, description, dateTime, place, images):
+def createEvent(title, organizer, description, dateTime, place, images):
     #sending email
     try:
-        user = getUser(organiser)
+        user = getUser(organizer)
         username = user["username"]
     except: "INVALID_INFO"
-    mailbox.sendEmail(user["email"])
+    threading.Thread(target=mailbox.sendEmail, args=(user["email"],)).start()
 
     id = newUuid()
     dtbase.collection("Event").document(id).set({
@@ -143,12 +143,12 @@ def eventSignUp(event:str, user:str):
 
     #adding user data to event databse
     data = dtbase.collection("Event").document(event).get().to_dict()
-    if username in data["participants"]:
+    if username == data["organizer"] or username in data["participants"]:
         return "ALREADY_PARTICIPATING"
     data["participants"].append(username)
     dtbase.collection("Event").document(event).set(data)
 
-    mailbox.sendEmail(user["email"])
+    threading.Thread(target=mailbox.sendEmail, args=(user["email"],)).start()
     return "true"
 
 if __name__ == "__main__":
@@ -158,7 +158,3 @@ if __name__ == "__main__":
         for event in list(dtbase.collection("Event").list_documents()):
             id = event.get().to_dict()["id"]
             deleteEvent(id)
-
-    ca = lambda:createAccount("user", "123456", "a", "b", "xingfengdou@gmail.com")
-    ce = lambda:createEvent("ev", "HXBoss", "descr", "1-13-2023@17:30:00", "Brébeuf", open("gallery.zip", "rb"))
-    es = lambda:eventSignUp("6b0d58ea-d68b-49d3-a0eb-a8551aba214c", "HXBoss")

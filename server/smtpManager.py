@@ -14,13 +14,15 @@ with open("sources/plant.jpg", "rb") as file:
     file.close()
 
 def sendEmail(email):
-    mail=MIMEMultipart("related")
-    mail["From"]="brebeufhxapp@gmail.com"
-    mail["To"] = email
-    mail["Subject"] = "Vous êtes inscrit(e)s un nouveau évènement"
-    mail.attach(MIMEText(html, "html", "utf-8"))
-    attachment = MIMEImage(bgImg)
-    attachment.add_header("Content-ID","<bgImg>")
-    mail.attach(attachment)
+    try:
+        mail=MIMEMultipart("related")
+        mail["From"]="brebeufhxapp@gmail.com"
+        mail["To"] = email
+        mail["Subject"] = "Vous êtes inscrit(e)s un nouveau évènement"
+        mail.attach(MIMEText(html, "html", "utf-8"))
+        attachment = MIMEImage(bgImg)
+        attachment.add_header("Content-ID","<bgImg>")
+        mail.attach(attachment)
 
-    server.sendmail("brebeufhxapp@gmail.com", email, mail.as_string())
+        server.sendmail("brebeufhxapp@gmail.com", email, mail.as_string())
+    except:pass

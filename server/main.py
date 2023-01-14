@@ -44,12 +44,12 @@ def createEvent():
     title = flask.request.form["title"]
     description = flask.request.form.get("description", "")
     dateTime = flask.request.form["dateTime"]
-    organiser = flask.request.form["organizer"]
+    organizer = flask.request.form["organizer"]
     place = flask.request.form["place"]
   except:return "INVALID_INFO"
 
   images = flask.request.files["gallery"]
-  fbm.createEvent(title, organiser, description, dateTime, place, images)
+  fbm.createEvent(title, organizer, description, dateTime, place, images)
   return "true"
 
 @server.route("/download/eventInfo", methods=["POST"])
@@ -67,11 +67,47 @@ def downloadGallery():
   gallery = fbm.downloadEventGallery(id)
   return flask.send_file(io.BytesIO(gallery), download_name="gallery.zip")
 
-@server.route("/participate")
+@server.route("/participate", methods=["POST"])
 def participate():
   eventID = flask.request.form["eventID"]
   userID = flask.request.form["userID"]
   return fbm.eventSignUp(eventID, userID)
+
+@server.route("/download/GreenDays")
+def downloadApp():
+  return flask.send_file("GreenDays.zip", as_attachment=True)
+
+#---------------------Messaging Server---------------------
+clients = {}
+
+@socketIO.on("connectUser")
+def clientConnect(data):
+  sid = flask.request.sid
+  username = data["username"]
+  clients[sid] = username
+
+@socketIO.on("disconnectUser")
+def clientDisconnect():
+  sid = flask.request.sid
+  del clients[sid]
+
+@socketIO.on("disconnect")
+def clientDisconnect():
+  sid = flask.request.sid
+  del clients[sid]
+
+@socketIO.on("sendMessage")
+def listenMessage(data):
+  sid = flask.request.sid
+  username = clients[sid]
+  eventID = data["eventID"]
+  message = data["message"]
+
+  #broadcast message
+  for clientSID in clients.keys():
+    if sid == clientSID: #the sender cannot receive the message
+      pass#continue
+    send("receiveMessage", {"username":username, "message":message, "id":eventID}, clientSID)
 
 if __name__ == "__main__":
   socketIO.run(server, host="0.0.0.0")
