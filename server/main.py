@@ -1,3 +1,4 @@
+import io, json
 import flask, flask_socketio
 import firebaseManager as fbm
 
@@ -34,6 +35,43 @@ def signIn():
 @server.route("/resetPassword")
 def resetPassword():
   return fbm.resetPassword(flask.request.form.get("id"))
+
+#---------------------Events Management---------------------
+
+@server.route("/createEvent", methods=["POST"])
+def createEvent():
+  try:
+    title = flask.request.form["title"]
+    description = flask.request.form.get("description", "")
+    dateTime = flask.request.form["dateTime"]
+    organiser = flask.request.form["organizer"]
+    place = flask.request.form["place"]
+  except:return "INVALID_INFO"
+
+  images = flask.request.files["gallery"]
+  fbm.createEvent(title, organiser, description, dateTime, place, images)
+  return "true"
+
+@server.route("/download/eventInfo", methods=["POST"])
+def getEventInfo():
+  n = int(flask.request.form.get("n", 5))
+  res = fbm.getEventInfo(n=n)
+
+  if isinstance(res, str): #response is an error code
+    return res
+  return json.dumps(res)
+
+@server.route("/download/gallery", methods=["POST"])
+def downloadGallery():
+  id = flask.request.form["id"]
+  gallery = fbm.downloadEventGallery(id)
+  return flask.send_file(io.BytesIO(gallery), download_name="gallery.zip")
+
+@server.route("/participate")
+def participate():
+  eventID = flask.request.form["eventID"]
+  userID = flask.request.form["userID"]
+  return fbm.eventSignUp(eventID, userID)
 
 if __name__ == "__main__":
   socketIO.run(server, host="0.0.0.0")

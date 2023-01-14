@@ -1,12 +1,14 @@
-import json, threading, random
+import json, threading, random, uuid
 import requests
 import firebase_admin
-from firebase_admin import firestore, auth
+from firebase_admin import firestore, auth, storage
+import smtpManager as mailbox
 
 cred = firebase_admin.credentials.Certificate("sources/credentials.json")
-app = firebase_admin.initialize_app(cred)
+app = firebase_admin.initialize_app(cred, {"storageBucket":"brebeufhxapp-f8521.appspot.com"})
 authenticator = auth.Client(app)
 dtbase = firestore.client()
+mediadb = storage.bucket()
 API_KEY = "AIzaSyAmnQRnBglx9y5n5cRMjvywODd1g519vkc"
 NOT_ALLOWED_CHAR_IN_USERNAME = {"@", "'", '"'}
 with open("sources/AboutTemplates.json", "r", encoding="utf-8") as file:
@@ -87,5 +89,76 @@ def delete_user(username):
         return "true"
     except auth.UserNotFoundError:return "INVALID_INFO"
 
+#accessing firebase storage to fetch medias
+
+def newUuid():
+    id = uuid.uuid4() #completely random uuid
+    if mediadb.blob(f"{id}/gallery").exists(): #current id is already used
+        return newUuid()
+    return str(id)
+
+def createEvent(title, organiser, description, dateTime, place, images):
+    #sending email
+    try:
+        user = getUser(organiser)
+        username = user["username"]
+    except: "INVALID_INFO"
+    mailbox.sendEmail(user["email"])
+
+    id = newUuid()
+    dtbase.collection("Event").document(id).set({
+        "id":id,
+        "title":title,
+        "organizer":username,
+        "description":description,
+        "dateTime":dateTime,
+        "place":place,
+        "participants":[]
+    })
+    galleryBlob = mediadb.blob(f"{id}/gallery")
+    galleryBlob.upload_from_file(images) 
+
+def getEventInfo(n=5):
+    #return list of event information
+    events = list(dtbase.collection("Event").list_documents())
+    if not events:
+        return "NO_EVENT"
+
+    random.shuffle(events)
+    events = [e.get().to_dict() for e in events[:min(len(events), n)]]
+    return events
+
+def downloadEventGallery(id:str):
+    return mediadb.blob(f"{id}/gallery").download_as_bytes()
+
+def deleteEvent(id:str):
+    dtbase.collection("Event").document(id).delete()
+    mediadb.blob(f"{id}/gallery").delete()
+
+def eventSignUp(event:str, user:str):
+    try:
+        user = getUser(user)
+        username = user["username"]
+    except:return "INVALID_INFO"
+
+    #adding user data to event databse
+    data = dtbase.collection("Event").document(event).get().to_dict()
+    if username in data["participants"]:
+        return "ALREADY_PARTICIPATING"
+    data["participants"].append(username)
+    dtbase.collection("Event").document(event).set(data)
+
+    mailbox.sendEmail(user["email"])
+    return "true"
+
 if __name__ == "__main__":
+    url = "http://192.168.1.8:5000"
+
+    def clear():
+        for event in list(dtbase.collection("Event").list_documents()):
+            id = event.get().to_dict()["id"]
+            deleteEvent(id)
+
     ca = lambda:createAccount("user", "123456", "a", "b", "xingfengdou@gmail.com")
+    ce = lambda:createEvent("ev", "HXBoss", "descr", "1-13-2023@17:30:00", "Brébeuf", open("gallery.zip", "rb"))
+    es = lambda:eventSignUp("6b0d58ea-d68b-49d3-a0eb-a8551aba214c", "HXBoss")
