@@ -150,11 +150,3 @@ def eventSignUp(event:str, user:str):
 
     threading.Thread(target=mailbox.sendEmail, args=(user["email"],)).start()
     return "true"
-
-if __name__ == "__main__":
-    url = "http://192.168.1.8:5000"
-
-    def clear():
-        for event in list(dtbase.collection("Event").list_documents()):
-            id = event.get().to_dict()["id"]
-            deleteEvent(id)

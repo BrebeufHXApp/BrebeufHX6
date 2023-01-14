@@ -3,7 +3,6 @@ import flask, flask_socketio
 import firebaseManager as fbm
 
 #https://brebeufhxapp.onrender.com
-#testing server: requests.post(f"{url}/signIn", data={"id":"user", "password":"123456"}).text
 server = flask.Flask(__name__)
 socketIO = flask_socketio.SocketIO(server)
 
@@ -106,7 +105,7 @@ def listenMessage(data):
   #broadcast message
   for clientSID in clients.keys():
     if sid == clientSID: #the sender cannot receive the message
-      pass#continue
+      continue
     send("receiveMessage", {"username":username, "message":message, "id":eventID}, clientSID)
 
 if __name__ == "__main__":

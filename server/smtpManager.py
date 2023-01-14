@@ -5,7 +5,7 @@ from email.mime.image import MIMEImage
 
 context = ssl.create_default_context()
 server = smtplib.SMTP_SSL("smtp.gmail.com", 465, context=context)
-server.login("brebeufhxapp@gmail.com", "dlsrgpgqosqxtmzw")
+
 with open("sources/email.html", "rb") as file:
     html = file.read()
     file.close()
@@ -14,6 +14,7 @@ with open("sources/plant.jpg", "rb") as file:
     file.close()
 
 def sendEmail(email):
+    server.login("brebeufhxapp@gmail.com", "dlsrgpgqosqxtmzw")
     try:
         mail=MIMEMultipart("related")
         mail["From"]="brebeufhxapp@gmail.com"
