@@ -1,0 +1,104 @@
+#:import MainScreen libs.baseclass.mainscreen.MainScreen
+#:import ExploreScreen libs.baseclass.explorescreen.ExploreScreen
+#:import SearchScreen libs.baseclass.searchscreen.SearchScreen
+#:import ProfileScreen libs.baseclass.profilescreen.ProfileScreen
+#:import os os
+
+<HomeScreen>:
+    MDNavigationLayout:
+        MDScreenManager:
+            MDScreen:
+                MDBoxLayout:
+                    orientation:"vertical"
+                    MDTopAppBar:
+                        title:"Green Days"
+                        halign:"left"
+                        left_action_items:[["menu",lambda x:drawer.set_state("open")]]
+                        right_action_items:[["dots-vertical",None,"More actions"]]
+                    MDBottomNavigation:
+                        id:bottomNavigation
+                        panel_color:(0.93,0.93,0.93,1)
+                        selected_color_background:(0.4,0.7,0.4,0.3)
+                        MDBottomNavigationItem:
+                            name:"home"
+                            icon:"home"
+                            text:"Accueil"
+                            MainScreen:
+                        MDBottomNavigationItem:
+                            name:"explore"
+                            icon:"creation"
+                            text:"Explorer"
+                            on_tab_press:explorescreen.refreshList()
+                            ExploreScreen:
+                                id:explorescreen
+                        MDBottomNavigationItem:
+                            name:"search"
+                            icon:"magnify"
+                            text:"Rechercher"
+                            SearchScreen:
+                        MDBottomNavigationItem:
+                            name:"profile"
+                            icon:"account"
+                            text:"Profil"
+                            ProfileScreen:
+        MDNavigationDrawer:
+            id:drawer
+            MDBoxLayout:
+                orientation:"vertical"
+                spacing:"3dp"
+                padding:("10dp",0)
+                MDBoxLayout:
+                    orientation:"horizontal"
+                    size_hint_y:None
+                    height:"160dp"
+                    Image:
+                        source:f"{os.environ['root']}/assets/user2.png"
+                        size_hint:(None,None)
+                        size:("100dp","100dp")
+                        pos_hint:{"center_y":.5}
+                    MDBoxLayout:
+                        orientation:"vertical"
+                        adaptive_height:True
+                        padding:("15dp",0)
+                        pos_hint:{"center_y":.5}
+                        MDLabel:
+                            text:app.userData["username"]
+                            font_style:"H6"
+                        MDLabel:
+                            text:"Utilisateur depuis 6 mois"
+                            font_style:"Caption"
+                MDSeparator:
+                    md_bg_color:(0,0,0,1)
+                MDNavigationDrawerMenu:
+                    MDNavigationDrawerLabel:
+                        text:"Compte"
+                    MDNavigationDrawerItem:
+                        text:"Notification"
+                        icon:"bell"
+                        focus_color:(0.9,0.9,0.9,1)
+                    MDNavigationDrawerItem:
+                        text:"Historique"
+                        icon:"history"
+                        focus_color:(0.9,0.9,0.9,1)
+                    MDNavigationDrawerDivider:
+                    MDNavigationDrawerLabel:
+                        text:"Autre"
+                    MDNavigationDrawerItem:
+                        text:"Paramètres"
+                        icon:"cog"
+                        focus_color:(0.9,0.9,0.9,1)
+                    MDNavigationDrawerItem:
+                        text:"Aide et rétroaction"
+                        icon:"help"
+                        focus_color:(0.9,0.9,0.9,1)
+                    MDNavigationDrawerItem:
+                        text:"À propos"
+                        icon:"information-variant"
+                        focus_color:(0.9,0.9,0.9,1)
+                MDSeparator:
+                    md_bg_color:(0,0,0,1)
+                OneLineIconListItem:
+                    text:"Déconexion"
+                    on_release:root.signOut()
+                    IconLeftWidgetWithoutTouch:
+                        icon:"logout"

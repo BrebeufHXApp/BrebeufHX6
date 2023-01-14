@@ -1,0 +1,58 @@
+#:import os os
+#:import dp kivy.metrics.dp
+
+<SearchScreen>:
+    Image:
+        source:f"{os.environ['root']}/assets/mainwallpaper.png"
+        allow_stretch:True
+        keep_ratio:False
+    MDTextField:
+        mode:"rectangle"
+        hint_text:"Entrez des mots clés"
+        icon_left:"magnify"
+        size_hint_x:0.8
+        pos_hint:{"center_x":0.5,"center_y":0.9}
+    MDLabel:
+        text:f"Dans {int(dateRange.value)} semaines" if dateRange.value!=0 else "Cette semaine"
+        font_size:"19sp"
+        adaptive_size:True
+        x:dateRange.x+dp(20)
+        pos_hint:{"center_y":0.73}
+    MDSlider:
+        id:dateRange
+        min:0
+        max:9
+        value:3
+        step:1
+        size_hint:(0.8,None)
+        height:"30dp"
+        pos_hint:{"center_x":0.5,"center_y":0.67}
+    MDLabel:
+        text:f"{int(distanceRange.value)}-{int(distanceRange.value)+5} km de chez vous"
+        font_size:"19sp"
+        adaptive_size:True
+        x:distanceRange.x+dp(20)
+        pos_hint:{"center_y":0.5}
+    MDSlider:
+        id:distanceRange
+        min:0
+        max:90
+        value:10
+        step:5
+        size_hint:(0.8,None)
+        height:"30dp"
+        pos_hint:{"center_x":0.5,"center_y":0.44}
+    MDSegmentedControl:
+        md_bg_color:(0.9,0.9,0.9,0.8)
+        segment_color:(0.6,0.9,0.6,1)
+        size_hint_x:0.87
+        pos_hint: {"center_x":.5,"center_y":.27}
+        MDSegmentedControlItem:
+            text: "Matin"
+        MDSegmentedControlItem:
+            text: "Après-midi"
+        MDSegmentedControlItem:
+            text: "Tout"
+    MDRaisedButton:
+        text:"Lancer la recherche"
+        pos_hint:{"center_x":0.5,"center_y":0.1}

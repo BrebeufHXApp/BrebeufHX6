@@ -1,0 +1,207 @@
+#:import os os
+#:import dp kivy.metrics.dp
+#:import ScrollEffect kivy.effects.scroll.ScrollEffect
+#:import MDSwapTransition kivymd.uix.transition.transition.MDSwapTransition
+
+<LoginTextField@MDTextField>:
+    text_color_normal:"white"
+    line_color_normal:"white"
+    icon_left_color_normal:"white"
+    hint_text_color_normal:"white"
+    font_size:"20sp"
+
+<LoginScreen>:
+    Image:
+        source:f"{os.environ['root']}/assets/loginwallpaper.jpg"
+        allow_stretch:True
+        keep_ratio:False
+    MDScreenManager:
+        id:loginpage
+        canvas:
+            Color:
+                rgba:(0,0,0,.4)
+            Rectangle:
+                pos:self.pos
+                size:self.size
+        transition:MDSwapTransition()
+        MDScreen:
+            name:"welcome"
+            MDBoxLayout:
+                orientation:"vertical"
+                spacing:"15dp"
+                size:("130dp","155dp")
+                size_hint:(None,None)
+                pos_hint:{"center_x":0.5,"center_y":0.75}
+                Image:
+                    source:f"{os.environ['root']}/assets/logo.png"
+                MDLabel:
+                    text:"Green Days"
+                    text_color:(1,1,1,1)
+                    theme_text_color:"Custom"
+                    font_size:"18sp"
+                    halign:"center"
+                    size_hint_y:None
+                    height:"10dp"
+            MDLabel:
+                text:"Un avenir plus vert commence [b]ici[/b]"
+                markup:True
+                font_size:"40sp"
+                text_color:(1,1,1,0.9)
+                theme_text_color:"Custom"
+                halign:"center"
+                padding:("15dp",0)
+                pos_hint:{"center_x":0.5,"center_y":0.4}
+            MDFillRoundFlatButton:
+                text:"   Continuer   "
+                font_size:"20sp"
+                text_color:"white"
+                md_bg_color:(0.3,0.8,0.3,0.6)
+                pos_hint:{"center_x":0.5,"center_y":0.14}
+                on_release:loginpage.current="signin"
+            MDBoxLayout:
+                orientation:"horizontal"
+                padding:("20dp",0)
+                adaptive_height:True
+                pos_hint:{"center_x":0.5,"center_y":0.03}
+                MDTextButton:
+                    text:"À propos"
+                    underline:True
+                    text_color:(1,1,1,1)
+                    theme_text_color:"Custom"
+                MDLabel:
+                    text:"v1"
+                    halign:"right"
+                    text_color:(1,1,1,1)
+                    theme_text_color:"Custom"
+        MDScreen:
+            name:"signin"
+            MDIconButton:
+                icon:"home"
+                icon_color:"white"
+                theme_icon_color:"Custom"
+                pos_hint:{"left":0,"top":1}
+                on_release:loginpage.current="welcome"
+            MDLabel:
+                text:"[b]Content de \nte revoir![/b]"
+                markup:True
+                text_color:(1,1,1,0.9)
+                theme_text_color:"Custom"
+                font_size:"42sp"
+                x:inputDialog1.x
+                pos_hint:{"center_y":0.7}
+            MDBoxLayout:
+                id:inputDialog1
+                orientation:"vertical"
+                spacing:"14dp"
+                size_hint:(None,None)
+                width:"280dp"
+                pos_hint:{"center_x":0.5,"center_y":0.35}
+                LoginTextField:
+                    id:usernameInput1
+                    hint_text:"Nom d'utilisateur ou email"
+                    icon_left:"account"
+                LoginTextField:
+                    id:passwordInput1
+                    hint_text:"Mot de passe"
+                    password:True
+                    icon_left:"key-variant"
+            MDLabel:
+                text:"Connexion"
+                text_color:(1,1,1,1)
+                theme_text_color:"Custom"
+                text_size:self.size
+                pos:(inputDialog1.x,inputDialog1.y-dp(40))
+            MDIconButton:
+                icon:"arrow-right"
+                icon_color:"white"
+                theme_icon_color:"Custom"
+                md_bg_color:(0.3,0.8,0.3,0.4)
+                icon_size:"30sp"
+                pos:(inputDialog1.right-self.width,inputDialog1.y-dp(60))
+                on_release:root.signIn(usernameInput1.text,passwordInput1.text)
+            MDTextButton:
+                text:"S'inscrire"
+                underline:True
+                text_color:(1,1,1,1)
+                theme_text_color:"Custom"
+                pos:(inputDialog1.x,dp(30))
+                on_release:loginpage.current="signup"
+            MDTextButton:
+                text:"Mot de pass oublié"
+                underline:True
+                text_color:(1,1,1,1)
+                theme_text_color:"Custom"
+                pos:(inputDialog1.right-self.width,dp(30))
+        MDScreen:
+            name:"signup"
+            MDIconButton:
+                icon:"home"
+                icon_color:"white"
+                theme_icon_color:"Custom"
+                pos_hint:{"left":0,"top":1}
+                on_release:loginpage.current="welcome"
+            MDLabel:
+                text:"Créer un\ncompte"
+                text_color:(1,1,1,0.9)
+                theme_text_color:"Custom"
+                font_size:"42sp"
+                x:inputDialog2.x
+                pos_hint:{"center_y":0.77}
+            MDScrollView:
+                id:inputDialog2
+                bar_width:0
+                effect_cls:ScrollEffect
+                size_hint:(None,None)
+                size:("280dp","270dp")
+                pos_hint:{"center_x":0.5,"center_y":0.43}
+                MDBoxLayout:
+                    orientation:"vertical"
+                    spacing:"14dp"
+                    adaptive_height:True
+                    LoginTextField:
+                        id:fNameInput
+                        hint_text:"Prénom"
+                        icon_left:"account"
+                    LoginTextField:
+                        id:lNameInput
+                        hint_text:"Nom de famille"
+                        icon_left:"account"
+                    LoginTextField:
+                        id:usernameInput2
+                        hint_text:"Nom d'utilisateur"
+                        icon_left:"account"
+                    LoginTextField:
+                        id:emailInput
+                        hint_text:"Email"
+                        icon_left:"account"
+                    LoginTextField:
+                        id:passwordInput2
+                        hint_text:"Mot de passe"
+                        icon_left:"account"
+                        password:True
+                    LoginTextField:
+                        id:passwordInput3
+                        hint_text:"Confirmer le mot de passe"
+                        icon_left:"account"
+                        password:True
+            MDLabel:
+                text:"Inscription"
+                text_color:(1,1,1,1)
+                theme_text_color:"Custom"
+                text_size:self.size
+                pos:(inputDialog2.x,inputDialog2.y-dp(40))
+            MDIconButton:
+                icon:"arrow-right"
+                icon_color:"white"
+                theme_icon_color:"Custom"
+                md_bg_color:(0.3,0.8,0.3,0.4)
+                icon_size:"30sp"
+                pos:(inputDialog2.right-self.width,inputDialog2.y-dp(60))
+                on_release:root.signUp(fNameInput.text,lNameInput.text,usernameInput2.text,emailInput.text,passwordInput2.text,passwordInput3.text)
+            MDTextButton:
+                text:"Connexion"
+                underline:True
+                text_color:(1,1,1,1)
+                theme_text_color:"Custom"
+                pos:(inputDialog2.x,dp(30))
+                on_release:loginpage.current="signin"

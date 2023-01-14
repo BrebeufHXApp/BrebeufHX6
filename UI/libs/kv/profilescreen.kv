@@ -1,0 +1,127 @@
+#:import dp kivy.metrics.dp
+#:import os os
+
+<SocialMediaButton@MDIconButton>:
+    theme_icon_color:"Custom"
+    icon_color:"white"
+
+<StatisticCell>
+    orientation:"vertical"
+    MDLabel:
+        text:root.title
+        halign:"center"
+    MDLabel:
+        text:str(root.value)
+        font_style:"H6"
+        halign:"center"
+
+<AboutText@MDTextButton+MDTooltip>:
+
+<ProfileScreen>:
+    Image:
+        canvas:
+            Color:
+                rgba:(0,0,0,0.4)
+            Rectangle:
+                pos:self.pos
+                size:self.size
+        source:f"{os.environ['root']}/assets/profilewallpaper.jpg"
+        allow_stretch:True
+        keep_ratio:False
+        size:self.size
+        pos:self.pos
+    MDWidget:
+        canvas:
+            Color:
+                rgba:(1,1,1,1)
+            Ellipse:
+                pos:self.pos
+                size:self.size
+        size_hint:(None,None)
+        size:("110dp","110dp")
+        pos_hint:{"center_x":0.5,"center_y":0.88}
+    MDWidget:
+        canvas:
+            Color:
+                rgb:(1,1,1)
+            Ellipse:
+                source:f"{os.environ['root']}/assets/user1.png"
+                pos:self.pos
+                size:self.size
+        size_hint:(None,None)
+        size:("100dp","100dp")
+        pos_hint:{"center_x":0.5,"center_y":0.88}
+    MDBoxLayout:
+        orientation:"vertical"
+        size_hint:(None,None)
+        size:("360dp","120dp")
+        pos_hint:{"center_x":0.5,"center_y":0.67}
+        MDLabel:
+            text:app.userData["fullName"]
+            halign:"center"
+            text_color:"white"
+            theme_text_color:"Custom"
+            font_style:"H6"
+        MDLabel:
+            text:"Montréal, CA"
+            halign:"center"
+            text_color:"white"
+            theme_text_color:"Custom"
+            font_style:"Caption"
+        MDBoxLayout:
+            oritation:"horizontal"
+            adaptive_size:True
+            pos_hint:{"center_x":0.5}
+            SocialMediaButton:
+                icon:"facebook"
+            SocialMediaButton:
+                icon:"twitter"
+            SocialMediaButton:
+                icon:"instagram"
+            SocialMediaButton:
+                icon:"whatsapp"
+            SocialMediaButton:
+                icon:"linkedin"
+            SocialMediaButton:
+                icon:"youtube"
+    MDBoxLayout:
+        orientation:"vertical"
+        radius:("20dp","20dp")
+        md_bg_color:(0.9,0.9,0.9,0.8)
+        size_hint:(None,None)
+        size:("340dp","250dp")
+        pos_hint:{"center_x":0.5,"center_y":0.3}
+        MDBoxLayout:
+            orientation:"horizontal"
+            size_hint_y:None
+            height:"60dp"
+            padding:("10dp","5dp")
+            StatisticCell:
+                title:"Abonnés"
+                value:app.userData["stats"][0]
+            MDSeparator:
+                orientation:"vertical"
+            StatisticCell:
+                title:"Abonnements"
+                value:app.userData["stats"][1]
+            MDSeparator:
+                orientation:"vertical"
+            StatisticCell:
+                title:"Amis"
+                value:app.userData["stats"][2]
+        MDSeparator:
+        MDScrollView:
+            do_scroll_x:False
+            AboutText:
+                text:app.userData["about"]
+                tooltip_text:"Cliquer pour modifier"
+                padding:("15dp","10dp")
+                size_hint_x:1
+                text_size:self.size
+        MDSeparator:
+        MDLabel:
+            text:f"[b]Email[/b]: {app.userData['email']}"
+            markup:True
+            size_hint_y:None
+            height:"40dp"
+            padding:("15dp",0)

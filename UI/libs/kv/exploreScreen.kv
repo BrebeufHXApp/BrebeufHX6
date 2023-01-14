@@ -1,0 +1,265 @@
+#:import os os
+#:import random random
+#:import dp kivy.metrics.dp
+#:import ScrollEffect kivy.effects.scroll.ScrollEffect
+#:import MDFadeSlideTransition kivymd.uix.transition.transition.MDFadeSlideTransition
+
+<EventCard>:
+    size_hint:(1,None)
+    height:"180dp"
+    radius:("15dp","15dp")
+    elevation:4
+    md_bg_color:random.choice(((0.3,0.95,0.7,1),(0.3,0.7,0.95,1),(0.95,0.7,0.3,1),(0.95,0.3,0.7,1),(0.7,0.3,0.95,1),(0.7,0.95,0.3,1)))
+    pos_hint:{"center_x":0.5,"center_y":0.5}
+    Image:
+        id:image
+        source:f"{os.environ['root']}/assets/treelogo.png"
+        size_hint:(None,None)
+        size:("80dp","80dp")
+        pos_hint:{"x":0.03,"center_y":0.5}
+    MDLabel:
+        id:title
+        text:root.title
+        font_style:"H5"
+        adaptive_size:True
+        x:image.right+dp(15)
+        pos_hint:{"top":0.92}
+    MDLabel:
+        text:f"{len(root.participants)}\nparticipants"
+        halign:"center"
+        font_size:"12sp"
+        adaptive_size:True
+        pos_hint:{"right":0.95,"center_y":0.5}
+    MDLabel:
+        text:root.location if len(root.location)<24 else f"{root.location[:20]} ..."
+        adaptive_size:True
+        pos:(title.x,title.y-dp(50))
+    MDLabel:
+        text:root.datetime
+        adaptive_size:True
+        pos:(title.x,title.y-dp(80))
+    MDLabel:
+        text:f"Organisé par {root.organizer}"
+        adaptive_size:True
+        pos_hint:{"center_x":0.5,"y":0.07}
+
+<EventDetail>:
+    MDBackdrop:
+        title:"Détail de l'évènement"
+        back_layer_color:(0.7,0.9,0.7,1)
+        left_action_items:[["arrow-expand-down",lambda x:self.open()]]
+        right_action_items:[["arrow-left",lambda x:setattr(root.exploreScreen,"current","eventlist"),"Retour"],["calendar-plus",lambda x:root.joinEvent(),"Rejoindre l'évènement"]]
+        header_text:"Conversation"
+        MDBackdropBackLayer:
+            MDBoxLayout:
+                orientation:"vertical"
+                MDScrollView:
+                    do_scroll_y:True
+                    effect_cls:ScrollEffect
+                    MDBoxLayout:
+                        orientation:"vertical"
+                        adaptive_height:True
+                        padding:("30dp",0)
+                        spacing:"12dp"
+                        MDLabel:
+                            text:f"[b]{root.title}[/b]"
+                            markup:True
+                            halign:"center"
+                            font_size:"25sp"
+                            adaptive_height:True
+                        MDSeparator:
+                        MDLabel:
+                            text:"Gallerie"
+                            font_style:"H6"
+                            adaptive_height:True
+                        MDSwiper:
+                            id:gallery
+                            size_hint_y:None
+                            height:"300dp"
+                        MDSeparator:
+                        MDLabel:
+                            text:"Description"
+                            font_style:"H6"
+                            adaptive_height:True
+                        MDLabel:
+                            text:root.description
+                            adaptive_height:True
+                        MDSeparator:
+                        MDLabel:
+                            text:f"[b]Organisateur[/b]: {root.organizer}"
+                            markup:True
+                            adaptive_height:True
+                        MDSeparator:
+                        MDLabel:
+                            text:f"[b]Emplacement[/b]: {root.location}"
+                            markup:True
+                            adaptive_height:True
+                        MDSeparator:
+                        MDLabel:
+                            text:f"[b]Date et heure[/b]: {root.datetime}"
+                            markup:True
+                            adaptive_height:True
+                        MDWidget:
+                            size_hint_y:None
+                            height:"100dp"
+        MDBackdropFrontLayer:
+            MDBoxLayout:
+                orientation:"vertical"
+                padding:("20dp",0)
+                spacing:"20dp"
+                MDScrollView:
+                    canvas.before:
+                        Color:
+                            rgb:(0.9,0.9,0.9)
+                        RoundedRectangle:
+                            pos:self.pos
+                            size:self.size
+                            radius:(20,20,20,20)
+                    do_scroll_y:True
+                    effect_cls:ScrollEffect
+                    MDBoxLayout:
+                        id:messages
+                        adaptive_height:True
+                        padding:("20dp","20dp")
+                        spacing:"20dp"
+                        orientation:"vertical"
+                MDBoxLayout:
+                    orientation:"horizontal"
+                    size_hint_y:None
+                    height:"60dp"
+                    spacing:"20dp"
+                    MDTextField:
+                        id:messageInput
+                        mode:"rectangle"
+                        hint_text:"Envoyer un message"
+                        multiline:True
+                        size_hint_y:1
+                    MDIconButton:
+                        icon:"send"
+                        md_bg_color:(.1,.7,.2,.5)
+                        on_release:root.sendMessage()
+
+<TooltipTextButton@MDRectangleFlatIconButton+MDTooltip>:
+    pos_hint:{"center_x":.5}
+
+<CreateButton@MDFloatingActionButton+MDTooltip>
+
+<ExploreScreen>:
+    transition:MDFadeSlideTransition()
+    MDScreen:   
+        name:"eventlist"
+        Image:
+            source:f"{os.environ['root']}/assets/mainwallpaper.png"
+            allow_stretch:True
+            keep_ratio:False
+        MDScrollView:
+            do_scroll_y:True
+            effect_cls:ScrollEffect
+            MDBoxLayout:
+                orientation:"vertical"
+                adaptive_height:True
+                padding:("20dp","40dp")
+                spacing:"40dp"
+                MDLabel:
+                    text:"Évènements en vedette"
+                    font_style:"H6"
+                MDBoxLayout:
+                    id:eventlist
+                    orientation:"vertical"
+                    adaptive_height:True
+                    spacing:"20dp"
+        CreateButton:
+            icon:"plus"
+            tooltip_text:"Créer un évènement"
+            pos_hint:{"right":0.95,"y":0.03}
+            on_release:root.current="createscreen"
+    
+    MDScreen:
+        name:"detailscreen"
+        EventDetail:
+            id:eventdetail
+
+    MDScreen:
+        name:"createscreen"
+        Image:
+            source:f"{os.environ['root']}/assets/mainwallpaper.png"
+            allow_stretch:True
+            keep_ratio:False
+        MDBoxLayout:
+            orientation:"vertical"
+            spacing:"10dp"
+            MDScrollView:
+                do_scroll_y:True
+                effect_cls:ScrollEffect
+                MDBoxLayout:
+                    orientation:"vertical"
+                    adaptive_height:True
+                    padding:("20dp","30dp")
+                    MDLabel:
+                        text:"Créer un évènement"
+                        font_style:"H5"
+                        halign:"center"
+                    MDWidget:
+                        size_hint_y:None
+                        height:"30dp"
+                    MDTextField:
+                        id:titleInput
+                        mode:"rectangle"
+                        hint_text:"Ajouter un titre"
+                        font_size:"25sp"
+                    MDWidget:
+                        size_hint_y:None
+                        height:"30dp"
+                    TooltipTextButton:
+                        id:selectImages
+                        text:"Ajouter des images (.zip)"
+                        tooltip_text:"Cliquer pour modifier les images"
+                        icon:"image"
+                        value:""
+                        on_release:root.selectImage()
+                    MDWidget:
+                        size_hint_y:None
+                        height:"30dp"
+                    MDTextField:
+                        id:descriptionInput
+                        mode:"rectangle"
+                        hint_text:"Ajouter une description"
+                        multiline:True
+                        font_size:"18sp"
+                        size_hint_y:None
+                    MDTextField:
+                        id:adressInput
+                        mode:"rectangle"
+                        hint_text:"Ajouter une adresse"
+                        font_size:"18sp"
+                        icon_left:"map-marker"
+                    MDWidget:
+                        size_hint_y:None
+                        height:"30dp"
+                    TooltipTextButton:
+                        id:selectDate
+                        text:"Ajouter une date"
+                        tooltip_text:"Cliquer pour modifier la date"
+                        icon:"calendar"
+                        on_release:root.selectDate()
+                    MDWidget:
+                        size_hint_y:None
+                        height:"30dp"
+                    TooltipTextButton:
+                        id:selectTime
+                        text:"Ajouter une heure"
+                        tooltip_text:"Cliquer pour modifier l'heure"
+                        icon:"clock-time-ten"
+                        on_release:root.selectTime()
+            MDSeparator:
+            MDFloatLayout:
+                size_hint:(1,None)
+                height:"50dp"
+                MDFillRoundFlatButton:
+                    text:"Supprimer et retourner"
+                    pos_hint:{"center_x":.25,"center_y":.5}
+                    on_release:root.discard()
+                MDFillRoundFlatButton:
+                    text:"Publier l'évènement"
+                    pos_hint:{"center_x":.75,"center_y":.5}
+                    on_release:root.publish()

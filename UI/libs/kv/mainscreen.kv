@@ -1,0 +1,56 @@
+#:import os os
+
+<IntroScreen>:
+    MDBoxLayout:
+        orientation:"vertical"
+        size_hint_x:0.8
+        spacing:"30dp"
+        adaptive_height:True
+        pos_hint:{"center_x":0.5,"top":0.94}
+        MDLabel:
+            text:f"[b]{root.title}[/b]"
+            markup:True
+            font_size:"23sp"
+            adaptive_height:True
+        MDLabel:
+            text:root.description
+            font_stype:"Caption"
+            text_color:"gray"
+            theme_text_color:"Custom"
+            adaptive_height:True
+    Image:
+        source:root.image
+        size_hint:(None,None)
+        size:("320dp","250dp")
+        pos_hint:{"center_x":0.5,"center_y":0.36}
+    MDLabel:
+        text:root.index
+        font_stype:"Caption"
+        text_color:"gray"
+        theme_text_color:"Custom"
+        adaptive_height:True
+        pos_hint:{"x":0.08,"y":0.045}
+    MDIconButton:
+        icon:"arrow-right"
+        md_bg_color:(0.4,0.8,0.4,0.6)
+        size_hint:(None,None)
+        pos_hint:{"right":0.92,"y":0.02}
+        on_release:root.parent.parent.load_next()
+
+<MainScreen>:
+    MDCarousel:
+        IntroScreen:
+            title:"Protégeons l'environnement"
+            description:"Il n'y a pas de temps à perdre, agissons maintenant. Chacun de nous est responsable de l'avenir de notre planète, ensemble nous pouvons faire la différence. Ne remettons pas à demain ce que nous pouvons faire aujourd'hui."
+            index:"1/3"
+            image:f"{os.environ['root']}/assets/intro1.png"
+        IntroScreen:
+            title:"Agissons pour la Terre"
+            description:"Nous avons la responsabilité de prendre soin de notre planète en réduisant notre empreinte écologique, en protégeant la biodiversité et en luttant contre les changements climatiques. Nous devons agir maintenant pour préserver la Terre pour les générations futures."
+            index:"2/3"
+            image:f"{os.environ['root']}/assets/intro2.png"
+        IntroScreen:
+            title:"Bâtissions le futur ensemble"
+            description:"Agissons ensemble pour protéger notre planète, unissons nos efforts pour un avenir durable. Chacun peut faire la différence, ensemble nous ferons une révolution écologique."
+            index:"3/3"
+            image:f"{os.environ['root']}/assets/intro3.png"
